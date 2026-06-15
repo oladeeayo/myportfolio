@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Alex Morgan</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Admin navigation">
+    <div class="container">
+      <div class="grid-12">
+        <div class="nav-logo">
+          <a href="/">AM.</a>
+        </div>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          <a href="/blog.html">Blog</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LOGIN -->
+  <section class="admin-login" id="loginSection">
+    <form id="loginForm" autocomplete="off">
+      <h1>Admin Access</h1>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+      <p class="error-msg" id="loginError">Incorrect password. Try again.</p>
+    </form>
+  </section>
+
+  <!-- ADMIN PANEL -->
+  <section class="admin-panel hidden" id="adminPanel">
+    <div class="container">
+      <div class="admin-header">
+        <h1>Manage Posts</h1>
+        <div style="display:flex; gap:12px;">
+          <button class="btn btn-primary" id="newPostBtn">New Post</button>
+          <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <!-- POST LIST -->
+      <div id="postsList">
+        <div class="posts-admin-list" id="adminPostsContainer">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="no-posts" id="adminNoPosts">
+          <p>No posts yet. Create your first post.</p>
+        </div>
+      </div>
+
+      <!-- POST FORM -->
+      <div class="admin-form-section hidden" id="postFormSection">
+        <hr class="divider" style="margin-bottom: 40px;">
+        <h2 id="formTitle" style="font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 32px;">New Post</h2>
+        <form id="postForm">
+          <div class="form-group">
+            <label for="postTitle">Title</label>
+            <input type="text" id="postTitle" placeholder="Post title" required>
+          </div>
+
+          <div class="form-group">
+            <label for="postExcerpt">Excerpt</label>
+            <textarea id="postExcerpt" placeholder="Brief summary for card preview" rows="3" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="postContent">Content (HTML)</label>
+            <textarea id="postContent" placeholder="Write full post content using HTML tags..."></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="form-group">
+              <label for="postCategory">Category</label>
+              <select id="postCategory">
+                <option value="blog">Blog</option>
+                <option value="thoughts">Thoughts</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="postDate">Date</label>
+              <input type="date" id="postDate">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="postTags">Tags (comma-separated)</label>
+            <input type="text" id="postTags" placeholder="e.g. Python, SQL, Visualization">
+          </div>
+
+          <div class="form-group checkbox">
+            <input type="checkbox" id="postPublished" checked>
+            <label for="postPublished">Published</label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="savePostBtn">Save Post</button>
+            <button type="button" class="btn btn-ghost" id="cancelFormBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
