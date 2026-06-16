@@ -150,6 +150,10 @@ h1, h2, h3, h4 {
   z-index: 100;
 }
 
+.nav .container {
+  height: 100%;
+}
+
 .nav .grid-12 {
   height: 100%;
   align-items: center;
@@ -323,6 +327,20 @@ h1, h2, h3, h4 {
   font-size: 0.875rem;
   color: var(--text-muted);
   margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.system-card .index i {
+  font-size: 1.25rem;
+  color: var(--accent);
+}
+
+.teaching-card .teaching-label i {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-right: 4px;
 }
 
 .system-card h3 {
@@ -511,6 +529,27 @@ h1, h2, h3, h4 {
 .post-card:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: var(--accent);
+}
+
+.post-card .read-more {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  transition: opacity 0.3s linear;
+}
+
+.post-card .read-more:hover {
+  opacity: 0.7;
+}
+
+.post-card .read-more i {
+  font-size: 0.875rem;
 }
 
 .post-card .category-badge {
@@ -1066,6 +1105,13 @@ h1, h2, h3, h4 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.project-card .project-icon i {
+  font-size: 1rem;
 }
 
 .project-card h3 {

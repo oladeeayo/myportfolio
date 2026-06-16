@@ -25,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
 <body>
 
@@ -68,10 +69,10 @@
 
     <section class="posts-section" aria-label="Blog posts list">
       <div class="container">
-        <div class="posts-grid" id="postsContainer" role="list"></div>
         <div class="no-posts" id="noPosts">
           <p>No posts found. Check back soon or <a href="/" style="color:var(--accent);text-decoration:underline;">return home</a>.</p>
         </div>
+        <div class="posts-grid" id="postsContainer" role="list"></div>
       </div>
     </section>
 
@@ -82,18 +83,6 @@
       <p>&copy; <span id="year"></span> Oladayo Oladipupo &mdash; Data Analyst &amp; Blockchain Data Analyst</p>
     </div>
   </footer>
-
-  <div class="modal-overlay" id="postModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-      <div class="post-meta">
-        <span class="category-badge" id="modalCategory"></span>
-        <span class="post-date" id="modalDate"></span>
-      </div>
-      <h2 class="post-title" id="modalTitle"></h2>
-      <div class="post-body" id="modalBody"></div>
-    </div>
-  </div>
 
   <script src="js/blog.js"></script>
 </body>
