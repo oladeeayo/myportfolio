@@ -142,6 +142,17 @@
     });
   });
 
+  var nav = document.querySelector('.nav');
+  if (nav) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  }
+
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 

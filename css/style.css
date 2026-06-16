@@ -201,6 +201,29 @@ h1, h2, h3, h4 {
   width: 100%;
 }
 
+/* Nav dark on scroll */
+.nav.scrolled {
+  background: rgba(20, 20, 20, 0.95);
+  border-bottom-color: rgba(199, 199, 199, 0.15);
+}
+
+.nav.scrolled .nav-logo a,
+.nav.scrolled .nav-links a {
+  color: #E3E2DE;
+}
+
+.nav.scrolled .nav-links a::after {
+  background: #E3E2DE;
+}
+
+.nav.scrolled .nav-links a:hover {
+  color: var(--accent);
+}
+
+.nav.scrolled .nav-links a:hover::after {
+  background: var(--accent);
+}
+
 /* ============ HERO SECTION ============ */
 
 .hero {
