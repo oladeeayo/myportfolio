@@ -95,7 +95,7 @@ h1, h2, h3, h4 {
 }
 
 .hero-headline {
-  font-size: clamp(3.5rem, 10vw, 10rem);
+  font-size: clamp(2.5rem, 8vw, 8rem);
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.04em;
@@ -1213,7 +1213,7 @@ h1, h2, h3, h4 {
 .social-link {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 24px 32px;
   border: 1px solid var(--border);
   flex: 1;
@@ -1222,11 +1222,16 @@ h1, h2, h3, h4 {
   transition: background 0.3s linear, color 0.3s linear;
   font-size: 0.875rem;
   font-weight: 600;
+  gap: 8px;
 }
 
 .social-link:hover {
   background: var(--text-primary);
   color: var(--bg);
+}
+
+.social-link i {
+  font-size: 1.25rem;
 }
 
 .social-link .social-handle {
@@ -1330,6 +1335,246 @@ h1, h2, h3, h4 {
   font-size: 1rem;
 }
 
+/* ============ EDUCATION ============ */
+
+.education-section {
+  padding: 100px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.education-list {
+  margin-top: 40px;
+}
+
+.education-item {
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.education-item:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.education-item .edu-period {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.education-item .edu-detail h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.education-item .edu-detail p {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.education-item .edu-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* ============ CONTRIBUTIONS ============ */
+
+.contributions-section {
+  padding: 100px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contrib-group-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+
+.contrib-group-label:first-child {
+  margin-top: 32px;
+}
+
+.contrib-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.contrib-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  border: 1px solid var(--border);
+  margin: -1px 0 0 -1px;
+  transition: background 0.3s linear, border-color 0.3s linear;
+  text-align: center;
+  min-height: 100px;
+}
+
+.contrib-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent);
+}
+
+.contrib-card .contrib-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.contrib-card .contrib-handle {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.contrib-card .contrib-category {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-top: 8px;
+}
+
+/* ============ SPEAKING ============ */
+
+.speaking-section {
+  padding: 100px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.speaking-list {
+  margin-top: 40px;
+}
+
+.speaking-item {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 16px;
+  border-top: 1px solid var(--border);
+  transition: background 0.3s linear;
+}
+
+.speaking-item:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.speaking-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.speaking-item .speaking-icon {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 80px;
+}
+
+.speaking-item .speaking-info h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.speaking-item .speaking-info p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.speaking-item .speaking-link {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.speaking-item .speaking-link:hover {
+  opacity: 0.7;
+}
+
+/* ============ FEATURED MEDIA ============ */
+
+.featured-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.featured-card {
+  border: 1px solid var(--border);
+  padding: 32px;
+  transition: background 0.3s linear, border-color 0.3s linear;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featured-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent);
+}
+
+.featured-card .featured-source {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.featured-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.featured-card a {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+.featured-card a:hover {
+  opacity: 0.7;
+}
+
 /* ============ UTILITY ============ */
 
 .hidden { display: none !important; }
@@ -1365,6 +1610,14 @@ h1, h2, h3, h4 {
 
   .projects-grid {
     grid-template-columns: 1fr;
+  }
+
+  .contrib-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1473,6 +1726,34 @@ h1, h2, h3, h4 {
   .contact-form .form-row {
     grid-template-columns: 1fr;
   }
+
+  .education-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .education-item .edu-tag {
+    text-align: left;
+  }
+
+  .contrib-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .speaking-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 20px 0;
+  }
+
+  .speaking-item .speaking-link {
+    margin-left: 0;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1491,5 +1772,9 @@ h1, h2, h3, h4 {
   .hero-cta {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .contrib-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
