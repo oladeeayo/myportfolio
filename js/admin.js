@@ -154,8 +154,7 @@ var admin = (function () {
     document.getElementById('cms-beyond').value = p.beyondBio || '';
   }
 
-  window.admin = window.admin || {};
-  window.admin.saveProfile = function () {
+  function saveProfile() {
     currentData.profile.name = document.getElementById('cms-name').value.trim();
     currentData.profile.role = document.getElementById('cms-role').value.trim();
     currentData.profile.bio = document.getElementById('cms-bio').value;
@@ -163,7 +162,9 @@ var admin = (function () {
     currentData.profile.beyondBio = document.getElementById('cms-beyond').value;
     save();
     alert('Profile saved!');
-  };
+  }
+
+  window.admin = { saveProfile: saveProfile };
 
   // Generic item render
   function renderItems(type) {
@@ -190,7 +191,7 @@ var admin = (function () {
     renderItems(type);
   }
 
-  window.admin.addItem = function (type) {
+  function addItemFn(type) {
     var schema = SCHEMAS[type];
     if (!schema) return;
     var newItem = { id: Date.now().toString() };
@@ -202,7 +203,9 @@ var admin = (function () {
     save();
     renderItems(type);
     openItemEditor(type, currentData[type].length - 1);
-  };
+  }
+
+  window.admin.addItem = addItemFn;
 
   var modal = document.getElementById('itemModal');
   var modalClose = document.getElementById('itemModalClose');
@@ -285,12 +288,14 @@ var admin = (function () {
     renderContribs();
   }
 
-  window.admin.addContrib = function (group) {
+  function addContribFn(group) {
     currentData.contributions[group].push({ id: Date.now().toString(), name: '', handle: '', category: group === 'products' ? 'Product' : group === 'ecosystem' ? 'Ecosystem' : 'Media', url: '' });
     save();
     renderContribs();
     openContribEditor(group, currentData.contributions[group].length - 1);
-  };
+  }
+
+  window.admin.addContrib = addContribFn;
 
   function openContribEditor(group, idx) {
     var item = currentData.contributions[group][idx];
@@ -361,8 +366,8 @@ var admin = (function () {
 
   checkAuth();
   return {
-    saveProfile: function () {},
-    addItem: function (type) {},
-    addContrib: function (group) {}
+    saveProfile: saveProfile,
+    addItem: addItemFn,
+    addContrib: addContribFn
   };
 })();
