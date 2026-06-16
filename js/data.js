@@ -175,15 +175,35 @@ window.DEFAULT_DATA = {
   ]
 };
 
+function sortByPeriod(arr) {
+  if (!arr) return;
+  arr.sort(function (a, b) {
+    function getYear(period) {
+      if (!period) return 0;
+      if (period.toLowerCase().indexOf('present') !== -1) return 9999;
+      var m = period.match(/(\d{4})/);
+      return m ? parseInt(m[1]) : 0;
+    }
+    return getYear(b.period) - getYear(a.period);
+  });
+}
+
 window.getPortfolioData = function () {
   try {
     var raw = localStorage.getItem(window.PORTFOLIO_STORAGE_KEY);
     if (raw) {
       var parsed = JSON.parse(raw);
-      if (parsed && parsed.profile) return parsed;
+      if (parsed && parsed.profile) {
+        sortByPeriod(parsed.experience);
+        sortByPeriod(parsed.education);
+        return parsed;
+      }
     }
   } catch (e) {}
-  return JSON.parse(JSON.stringify(window.DEFAULT_DATA));
+  var def = JSON.parse(JSON.stringify(window.DEFAULT_DATA));
+  sortByPeriod(def.experience);
+  sortByPeriod(def.education);
+  return def;
 };
 
 window.savePortfolioData = function (data) {

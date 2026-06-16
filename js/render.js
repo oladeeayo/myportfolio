@@ -25,6 +25,22 @@
     }).join('');
   }
 
+  function getStartYear(period) {
+    if (!period) return 0;
+    if (period.toLowerCase().indexOf('present') !== -1) return 9999;
+    var match = period.match(/(\d{4})/);
+    return match ? parseInt(match[1]) : 0;
+  }
+
+  function sortByPeriod(arr) {
+    arr.sort(function (a, b) {
+      return getStartYear(b.period) - getStartYear(a.period);
+    });
+  }
+
+  sortByPeriod(data.experience);
+  sortByPeriod(data.education);
+
   // Experience
   var expContainer = qs('[data-section="experience"]');
   if (expContainer && data.experience) {

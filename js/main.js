@@ -1,15 +1,16 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 
-var nav = document.querySelector('.nav');
-if (nav) {
-  window.addEventListener('scroll', function () {
-    if (window.scrollY > 60) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  });
-}
+(function () {
+  var nav = document.querySelector('.nav') || document.querySelector('nav');
+  if (!nav) return;
+  function checkScroll() {
+    var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    nav.classList.toggle('scrolled', scrollY > 60);
+  }
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  window.addEventListener('load', checkScroll);
+  checkScroll();
+})();
 
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   anchor.addEventListener('click', function (e) {
@@ -21,7 +22,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   });
 });
 
-// Contact form client-side validation & success feedback
+// Contact form
 const contactForm = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');
 
@@ -52,8 +53,6 @@ if (contactForm) {
       return;
     }
 
-    // For formsubmit.co: show success, hide form
-    // The form will redirect by default, so we use a trick
     e.preventDefault();
 
     const formData = new FormData(contactForm);

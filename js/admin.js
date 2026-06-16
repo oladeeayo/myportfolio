@@ -61,11 +61,28 @@
 
   function $(id) { return document.getElementById(id); }
 
+  function getStartYear(period) {
+    if (!period) return 0;
+    if (period.toLowerCase().indexOf('present') !== -1) return 9999;
+    var match = period.match(/(\d{4})/);
+    return match ? parseInt(match[1]) : 0;
+  }
+
+  function sortByPeriod(arr) {
+    arr.sort(function (a, b) {
+      return getStartYear(b.period) - getStartYear(a.period);
+    });
+  }
+
   function load() {
     currentData = window.getPortfolioData();
+    sortByPeriod(currentData.experience);
+    sortByPeriod(currentData.education);
   }
 
   function save() {
+    sortByPeriod(currentData.experience);
+    sortByPeriod(currentData.education);
     window.savePortfolioData(currentData);
   }
 
@@ -362,15 +379,15 @@
   }
 
   // Nav dark on scroll
-  var nav = document.querySelector('.nav');
+  var nav = document.querySelector('.nav') || document.querySelector('nav');
   if (nav) {
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 60) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    });
+    function checkScroll() {
+      var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      nav.classList.toggle('scrolled', scrollY > 60);
+    }
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('load', checkScroll);
+    checkScroll();
   }
 
   checkAuth();

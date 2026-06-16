@@ -142,15 +142,15 @@
     });
   });
 
-  var nav = document.querySelector('.nav');
+  var nav = document.querySelector('.nav') || document.querySelector('nav');
   if (nav) {
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 60) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    });
+    function checkScroll() {
+      var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      nav.classList.toggle('scrolled', scrollY > 60);
+    }
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('load', checkScroll);
+    checkScroll();
   }
 
   const yearEl = document.getElementById('year');
