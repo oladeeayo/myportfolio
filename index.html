@@ -123,12 +123,9 @@
                 <img src="assets/oladayo.jpg" alt="Oladayo Oladipupo">
               </div>
               <div class="profile-info">
-                <h3>Oladayo Oladipupo</h3>
-                <p class="role">Data Analyst &amp; Blockchain Data Analyst</p>
-                <p class="bio">
-                  Here's what I typically help with:
-                </p>
-                <ul style="margin-top:12px;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                <h3 data-field="profile-name">Oladayo Oladipupo</h3>
+                <p class="role" data-field="profile-role">Data Analyst &amp; Blockchain Data Analyst</p>
+                <ul style="margin-top:12px;list-style:none;display:flex;flex-direction:column;gap:8px;" data-field="profile-highlights">
                   <li style="font-size:0.9375rem;color:var(--text-secondary);padding-left:16px;border-left:2px solid var(--accent);">
                     Building custom Dune Analytics dashboards for protocol tracking, user behavior, and on-chain metrics.
                   </li>
@@ -142,12 +139,12 @@
                     Translating on-chain activity into clear reports for non-technical stakeholders.
                   </li>
                 </ul>
-                <p class="bio" style="margin-top:16px;">
+                <p class="bio" style="margin-top:16px;" data-field="profile-beyond">
                   Beyond blockchain, I bring experience in traditional data analytics — cleaning, analyzing,
                   and visualizing large datasets using Excel, Python, SQL, and Tableau to support business
                   decisions across finance, supply chain, and customer analytics.
                 </p>
-                <p class="bio" style="margin-top:12px;">
+                <p class="bio" style="margin-top:12px;" data-field="profile-expanding">
                   <strong>Currently expanding into Data Engineering</strong> to build even more powerful
                   data pipelines for Web3 and enterprise clients.
                 </p>
@@ -167,7 +164,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Experience.</h2>
-            <div class="resume-list">
+            <div class="resume-list" data-section="experience">
               <div class="resume-item">
                 <span class="resume-period">2024 — Present</span>
                 <div class="resume-role">
@@ -207,7 +204,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Education.</h2>
-            <div class="education-list">
+            <div class="education-list" data-section="education">
               <div class="education-item">
                 <span class="edu-period">Oct 2025 — Aug 2026</span>
                 <div class="edu-detail">
@@ -239,7 +236,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Certifications.</h2>
-            <div class="certs-grid">
+            <div class="certs-grid" data-section="certifications">
               <a href="https://www.datacamp.com/certificate/DA0024628717608" target="_blank" rel="noopener noreferrer" class="cert-card" style="text-decoration:none;color:inherit;display:block;">
                 <p class="cert-org">DataCamp</p>
                 <h4>Data Analyst</h4>
@@ -265,7 +262,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Featured Work.</h2>
-            <div class="projects-grid">
+            <div class="projects-grid" data-section="projects">
               <div class="project-card">
                 <p class="project-icon"><i class="ph ph-magnifying-glass"></i> Blockchain</p>
                 <h3>Pumpfun Token Deployer Records</h3>
@@ -325,7 +322,7 @@
             <h2 class="section-headline">Contributions.</h2>
 
             <p class="contrib-group-label">Products</p>
-            <div class="contrib-grid">
+            <div class="contrib-grid" data-section="contrib-products">
               <a href="https://cngn.co" target="_blank" rel="noopener noreferrer" class="contrib-card" style="text-decoration:none;color:inherit;">
                 <span class="contrib-logo">cNGN</span>
                 <span class="contrib-handle">@cngn_co</span>
@@ -349,7 +346,7 @@
             </div>
 
             <p class="contrib-group-label">Ecosystem &amp; Education</p>
-            <div class="contrib-grid">
+            <div class="contrib-grid" data-section="contrib-ecosystem">
               <a href="https://twitter.com/Dune_Africa" target="_blank" rel="noopener noreferrer" class="contrib-card" style="text-decoration:none;color:inherit;">
                 <span class="contrib-logo">Dune Africa</span>
                 <span class="contrib-handle">@Dune_Africa</span>
@@ -378,7 +375,7 @@
             </div>
 
             <p class="contrib-group-label">Media &amp; Blogs</p>
-            <div class="contrib-grid">
+            <div class="contrib-grid" data-section="contrib-media">
               <a href="https://themariblock.com" target="_blank" rel="noopener noreferrer" class="contrib-card" style="text-decoration:none;color:inherit;">
                 <span class="contrib-logo">Mariblock</span>
                 <span class="contrib-handle">@theMariblock</span>
@@ -409,7 +406,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Featured.</h2>
-            <div class="featured-grid">
+            <div class="featured-grid" data-section="featured">
               <div class="featured-card">
                 <p class="featured-source">Condia</p>
                 <h4>cNGN: Growing a 15M Base on Blockchain</h4>
@@ -440,7 +437,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Speaking.</h2>
-            <div class="speaking-list">
+            <div class="speaking-list" data-section="speaking">
               <div class="speaking-item">
                 <span class="speaking-icon"><i class="ph ph-microphone"></i> Talk</span>
                 <div class="speaking-info">
@@ -472,7 +469,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">What I<br>Work With.</h2>
-            <div class="system-grid">
+            <div class="system-grid" data-section="skills">
               <div class="system-card">
                 <p class="index"><i class="ph ph-table"></i> 01</p>
                 <h3>Spreadsheet</h3>
@@ -518,7 +515,7 @@
           </div>
           <div class="section-content">
             <h2 class="teaching-headline">Not only do I know these things —<br>I teach them.</h2>
-            <div class="teaching-grid">
+            <div class="teaching-grid" data-section="teaching">
               <div class="teaching-card">
                 <p class="teaching-label"><i class="ph ph-book-open"></i> Workshop</p>
                 <h4>SQL Masterclass</h4>
@@ -558,7 +555,7 @@
           </div>
           <div class="section-content">
             <h2 class="section-headline">Find Me Online.</h2>
-            <div class="social-links">
+            <div class="social-links" data-section="social">
               <a href="https://github.com/oladeeayo" target="_blank" rel="noopener noreferrer" class="social-link">
                 <span><i class="ph ph-github-logo"></i> GitHub</span>
               </a>
@@ -575,7 +572,7 @@
                 <span><i class="ph ph-youtube-logo"></i> YouTube</span>
               </a>
               <a href="https://dune.com/oladee" target="_blank" rel="noopener noreferrer" class="social-link">
-                <span><i class="ph ph-graph"></i> Dune</span>
+                <span><i class="ph ph-chart-bar"></i> Dune</span>
               </a>
             </div>
           </div>
@@ -648,6 +645,8 @@
     </div>
   </footer>
 
+  <script src="js/data.js"></script>
+  <script src="js/render.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

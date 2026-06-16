@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Alex Morgan</title>
+  <title>CMS Admin | Oladayo Oladipupo</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
 </head>
 <body>
 
@@ -16,11 +18,12 @@
     <div class="container">
       <div class="grid-12">
         <div class="nav-logo">
-          <a href="/">AM.</a>
+          <a href="/">O.</a>
         </div>
         <div class="nav-links">
           <a href="/">Home</a>
           <a href="/blog.html">Blog</a>
+          <a href="/admin.html" style="color:var(--accent);">CMS</a>
         </div>
       </div>
     </div>
@@ -29,7 +32,7 @@
   <!-- LOGIN -->
   <section class="admin-login" id="loginSection">
     <form id="loginForm" autocomplete="off">
-      <h1>Admin Access</h1>
+      <h1>CMS Access</h1>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="Enter password" required>
@@ -43,77 +46,144 @@
   <section class="admin-panel hidden" id="adminPanel">
     <div class="container">
       <div class="admin-header">
-        <h1>Manage Posts</h1>
-        <div style="display:flex; gap:12px;">
-          <button class="btn btn-primary" id="newPostBtn">New Post</button>
-          <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+        <h1>Manage Portfolio</h1>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="/" class="btn btn-ghost" style="font-size:0.75rem;padding:8px 16px;">View Site</a>
+          <button class="btn btn-ghost" id="resetBtn" style="font-size:0.75rem;padding:8px 16px;color:#c0392b;border-color:#c0392b;">Reset to Default</button>
+          <button class="btn btn-primary" id="logoutBtn">Logout</button>
         </div>
       </div>
 
-      <!-- POST LIST -->
-      <div id="postsList">
-        <div class="posts-admin-list" id="adminPostsContainer">
-          <!-- Rendered by JS -->
-        </div>
-        <div class="no-posts" id="adminNoPosts">
-          <p>No posts yet. Create your first post.</p>
+      <!-- SECTION TABS -->
+      <div style="display:flex;gap:0;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:40px;">
+        <button class="cms-tab active" data-tab="profile">Profile</button>
+        <button class="cms-tab" data-tab="experience">Experience</button>
+        <button class="cms-tab" data-tab="education">Education</button>
+        <button class="cms-tab" data-tab="certifications">Certs</button>
+        <button class="cms-tab" data-tab="projects">Projects</button>
+        <button class="cms-tab" data-tab="contributions">Network</button>
+        <button class="cms-tab" data-tab="featured">Featured</button>
+        <button class="cms-tab" data-tab="speaking">Speaking</button>
+        <button class="cms-tab" data-tab="skills">Skills</button>
+        <button class="cms-tab" data-tab="teaching">Teaching</button>
+        <button class="cms-tab" data-tab="social">Social</button>
+        <button class="cms-tab" data-tab="blog">Blog</button>
+      </div>
+
+      <!-- TAB PANELS -->
+      <div class="cms-panel active" id="panel-profile">
+        <h2 class="cms-panel-title"><i class="ph ph-user"></i> Profile</h2>
+        <div class="cms-form" style="max-width:640px;">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="cms-name">
+          </div>
+          <div class="form-group">
+            <label>Role / Title</label>
+            <input type="text" id="cms-role">
+          </div>
+          <div class="form-group">
+            <label>Bio (use \n for line breaks)</label>
+            <textarea id="cms-bio" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Highlights (one per line)</label>
+            <textarea id="cms-highlights" rows="4" placeholder="Each line becomes a bullet point"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Beyond Blockchain Bio</label>
+            <textarea id="cms-beyond" rows="3"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="admin.saveProfile()">Save Profile</button>
         </div>
       </div>
 
-      <!-- POST FORM -->
-      <div class="admin-form-section hidden" id="postFormSection">
-        <hr class="divider" style="margin-bottom: 40px;">
-        <h2 id="formTitle" style="font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 32px;">New Post</h2>
-        <form id="postForm">
-          <div class="form-group">
-            <label for="postTitle">Title</label>
-            <input type="text" id="postTitle" placeholder="Post title" required>
-          </div>
-
-          <div class="form-group">
-            <label for="postExcerpt">Excerpt</label>
-            <textarea id="postExcerpt" placeholder="Brief summary for card preview" rows="3" required></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="postContent">Content (HTML)</label>
-            <textarea id="postContent" placeholder="Write full post content using HTML tags..."></textarea>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-            <div class="form-group">
-              <label for="postCategory">Category</label>
-              <select id="postCategory">
-                <option value="blog">Blog</option>
-                <option value="thoughts">Thoughts</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="postDate">Date</label>
-              <input type="date" id="postDate">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="postTags">Tags (comma-separated)</label>
-            <input type="text" id="postTags" placeholder="e.g. Python, SQL, Visualization">
-          </div>
-
-          <div class="form-group checkbox">
-            <input type="checkbox" id="postPublished" checked>
-            <label for="postPublished">Published</label>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="savePostBtn">Save Post</button>
-            <button type="button" class="btn btn-ghost" id="cancelFormBtn">Cancel</button>
-          </div>
-        </form>
+      <div class="cms-panel" id="panel-experience">
+        <h2 class="cms-panel-title"><i class="ph ph-briefcase"></i> Experience</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('experience')" style="margin-bottom:24px;">+ Add Experience</button>
+        <div class="cms-items" id="items-experience"></div>
       </div>
+
+      <div class="cms-panel" id="panel-education">
+        <h2 class="cms-panel-title"><i class="ph ph-graduation-cap"></i> Education</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('education')" style="margin-bottom:24px;">+ Add Education</button>
+        <div class="cms-items" id="items-education"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-certifications">
+        <h2 class="cms-panel-title"><i class="ph ph-certificate"></i> Certifications</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('certifications')" style="margin-bottom:24px;">+ Add Certification</button>
+        <div class="cms-items" id="items-certifications"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-projects">
+        <h2 class="cms-panel-title"><i class="ph ph-folder"></i> Projects</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('projects')" style="margin-bottom:24px;">+ Add Project</button>
+        <div class="cms-items" id="items-projects"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-contributions">
+        <h2 class="cms-panel-title"><i class="ph ph-nodes"></i> Network / Contributions</h2>
+        <h3 style="font-size:0.875rem;margin:24px 0 12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">Products</h3>
+        <button class="btn btn-primary" onclick="admin.addContrib('products')" style="margin-bottom:16px;">+ Add Product</button>
+        <div class="cms-items" id="contrib-products"></div>
+        <h3 style="font-size:0.875rem;margin:24px 0 12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">Ecosystem / Education</h3>
+        <button class="btn btn-primary" onclick="admin.addContrib('ecosystem')" style="margin-bottom:16px;">+ Add Ecosystem</button>
+        <div class="cms-items" id="contrib-ecosystem"></div>
+        <h3 style="font-size:0.875rem;margin:24px 0 12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">Media / Blogs</h3>
+        <button class="btn btn-primary" onclick="admin.addContrib('media')" style="margin-bottom:16px;">+ Add Media</button>
+        <div class="cms-items" id="contrib-media"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-featured">
+        <h2 class="cms-panel-title"><i class="ph ph-newspaper"></i> Featured Articles</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('featured')" style="margin-bottom:24px;">+ Add Featured</button>
+        <div class="cms-items" id="items-featured"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-speaking">
+        <h2 class="cms-panel-title"><i class="ph ph-microphone"></i> Speaking Events</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('speaking')" style="margin-bottom:24px;">+ Add Event</button>
+        <div class="cms-items" id="items-speaking"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-skills">
+        <h2 class="cms-panel-title"><i class="ph ph-lightning"></i> Skills</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('skills')" style="margin-bottom:24px;">+ Add Skill</button>
+        <div class="cms-items" id="items-skills"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-teaching">
+        <h2 class="cms-panel-title"><i class="ph ph-book-open"></i> Teaching</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('teaching')" style="margin-bottom:24px;">+ Add Teaching</button>
+        <div class="cms-items" id="items-teaching"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-social">
+        <h2 class="cms-panel-title"><i class="ph ph-share-network"></i> Social Links</h2>
+        <button class="btn btn-primary" onclick="admin.addItem('social')" style="margin-bottom:24px;">+ Add Social Link</button>
+        <div class="cms-items" id="items-social"></div>
+      </div>
+
+      <div class="cms-panel" id="panel-blog">
+        <h2 class="cms-panel-title"><i class="ph ph-pencil"></i> Blog Posts</h2>
+        <div class="posts-admin-list" id="adminPostsContainerBlog"></div>
+        <div class="no-posts" id="adminNoPostsBlog"><p>No blog posts.</p></div>
+      </div>
+
     </div>
   </section>
 
+  <!-- ITEM EDITOR MODAL -->
+  <div class="modal-overlay" id="itemModal">
+    <div class="modal-content" style="max-width:600px;">
+      <button class="modal-close" id="itemModalClose">&times;</button>
+      <h2 id="itemModalTitle" style="font-size:1.25rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px;">Edit Item</h2>
+      <div id="itemFormContainer"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

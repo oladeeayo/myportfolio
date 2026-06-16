@@ -1,196 +1,368 @@
-(function () {
-  const STORAGE_KEY = 'portfolio_posts';
-  const ADMIN_PASSWORD = 'admin123';
+var admin = (function () {
+  var PASSWORD = 'admin123';
+  var isLoggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
+  var currentData = null;
+  var editingItem = null;
+  var editingType = null;
 
-  const loginSection = document.getElementById('loginSection');
-  const adminPanel = document.getElementById('adminPanel');
-  const loginForm = document.getElementById('loginForm');
-  const passwordInput = document.getElementById('password');
-  const loginError = document.getElementById('loginError');
-  const logoutBtn = document.getElementById('logoutBtn');
+  var SCHEMAS = {
+    experience: { fields: [
+      { key: 'period', label: 'Period', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'company', label: 'Company', type: 'text' },
+      { key: 'tag', label: 'Tag', type: 'text' }
+    ]},
+    education: { fields: [
+      { key: 'period', label: 'Period', type: 'text' },
+      { key: 'degree', label: 'Degree', type: 'text' },
+      { key: 'school', label: 'School', type: 'text' },
+      { key: 'tag', label: 'Tag', type: 'text' }
+    ]},
+    certifications: { fields: [
+      { key: 'org', label: 'Organization', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'url', label: 'Credential URL', type: 'url' }
+    ]},
+    projects: { fields: [
+      { key: 'icon', label: 'Icon name (e.g. magnifying-glass)', type: 'text' },
+      { key: 'category', label: 'Category (e.g. Blockchain)', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'desc', label: 'Description', type: 'textarea' },
+      { key: 'links', label: 'Links (JSON array of {label,url})', type: 'textarea' }
+    ]},
+    featured: { fields: [
+      { key: 'source', label: 'Source (e.g. Condia)', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'url', label: 'URL', type: 'url' }
+    ]},
+    speaking: { fields: [
+      { key: 'icon', label: 'Icon name (e.g. microphone)', type: 'text' },
+      { key: 'label', label: 'Label (e.g. Talk)', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'desc', label: 'Description', type: 'text' },
+      { key: 'url', label: 'Video URL', type: 'url' }
+    ]},
+    skills: { fields: [
+      { key: 'icon', label: 'Icon name', type: 'text' },
+      { key: 'index', label: 'Index (e.g. 01)', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'desc', label: 'Description', type: 'textarea' }
+    ]},
+    teaching: { fields: [
+      { key: 'icon', label: 'Icon name', type: 'text' },
+      { key: 'label', label: 'Label (Workshop/Course/Tutorial)', type: 'text' },
+      { key: 'title', label: 'Title', type: 'text' }
+    ]},
+    social: { fields: [
+      { key: 'icon', label: 'Icon name (e.g. github-logo)', type: 'text' },
+      { key: 'name', label: 'Display Name', type: 'text' },
+      { key: 'url', label: 'URL', type: 'url' }
+    ]}
+  };
 
-  const postsContainer = document.getElementById('adminPostsContainer');
-  const noPosts = document.getElementById('adminNoPosts');
-  const newPostBtn = document.getElementById('newPostBtn');
-  const postFormSection = document.getElementById('postFormSection');
-  const formTitle = document.getElementById('formTitle');
-  const postForm = document.getElementById('postForm');
-  const savePostBtn = document.getElementById('savePostBtn');
-  const cancelFormBtn = document.getElementById('cancelFormBtn');
+  function qs(s) { return document.querySelector(s); }
+  function qsa(s) { return document.querySelectorAll(s); }
 
-  const titleInput = document.getElementById('postTitle');
-  const excerptInput = document.getElementById('postExcerpt');
-  const contentInput = document.getElementById('postContent');
-  const categoryInput = document.getElementById('postCategory');
-  const dateInput = document.getElementById('postDate');
-  const tagsInput = document.getElementById('postTags');
-  const publishedInput = document.getElementById('postPublished');
+  function load() {
+    currentData = window.getPortfolioData();
+    return currentData;
+  }
 
-  let editingId = null;
-  let isLoggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
+  function save() {
+    window.savePortfolioData(currentData);
+  }
+
+  // Auth
+  var loginSection = document.getElementById('loginSection');
+  var adminPanel = document.getElementById('adminPanel');
 
   function checkAuth() {
     if (isLoggedIn) {
       loginSection.classList.add('hidden');
       adminPanel.classList.remove('hidden');
-      renderPosts();
+      load();
+      renderAll();
     } else {
       loginSection.classList.remove('hidden');
       adminPanel.classList.add('hidden');
     }
   }
 
-  loginForm.addEventListener('submit', function (e) {
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    if (passwordInput.value === ADMIN_PASSWORD) {
+    if (document.getElementById('password').value === PASSWORD) {
       isLoggedIn = true;
       sessionStorage.setItem('admin_logged_in', 'true');
-      loginError.classList.remove('visible');
+      document.getElementById('loginError').classList.remove('visible');
       checkAuth();
     } else {
-      loginError.classList.add('visible');
+      document.getElementById('loginError').classList.add('visible');
     }
-    passwordInput.value = '';
+    document.getElementById('password').value = '';
   });
 
-  logoutBtn.addEventListener('click', function () {
+  document.getElementById('logoutBtn').addEventListener('click', function () {
     isLoggedIn = false;
     sessionStorage.removeItem('admin_logged_in');
     checkAuth();
   });
 
-  function getPosts() {
-    try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (data) {
-        const parsed = JSON.parse(data);
-        if (parsed.length > 0) return parsed;
-      }
-    } catch {}
-    return [];
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (confirm('Reset all portfolio data to defaults? This cannot be undone.')) {
+      window.resetPortfolioData();
+      load();
+      renderAll();
+      alert('Data reset to defaults.');
+    }
+  });
+
+  // Tabs
+  qsa('.cms-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      qsa('.cms-tab').forEach(function (t) { t.classList.remove('active'); });
+      qsa('.cms-panel').forEach(function (p) { p.classList.remove('active'); });
+      this.classList.add('active');
+      var panel = document.getElementById('panel-' + this.dataset.tab);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Render all
+  function renderAll() {
+    renderProfile();
+    renderItems('experience');
+    renderItems('education');
+    renderItems('certifications');
+    renderItems('projects');
+    renderContribs();
+    renderItems('featured');
+    renderItems('speaking');
+    renderItems('skills');
+    renderItems('teaching');
+    renderItems('social');
+    renderBlogPosts();
   }
 
-  function savePosts(posts) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+  // Profile
+  function renderProfile() {
+    if (!currentData || !currentData.profile) return;
+    var p = currentData.profile;
+    document.getElementById('cms-name').value = p.name || '';
+    document.getElementById('cms-role').value = p.role || '';
+    document.getElementById('cms-bio').value = p.bio || '';
+    document.getElementById('cms-highlights').value = (p.highlights || []).join('\n');
+    document.getElementById('cms-beyond').value = p.beyondBio || '';
   }
 
-  function renderPosts() {
-    const posts = getPosts();
-    postsContainer.innerHTML = '';
-    noPosts.style.display = posts.length ? 'none' : 'block';
+  window.admin = window.admin || {};
+  window.admin.saveProfile = function () {
+    currentData.profile.name = document.getElementById('cms-name').value.trim();
+    currentData.profile.role = document.getElementById('cms-role').value.trim();
+    currentData.profile.bio = document.getElementById('cms-bio').value;
+    currentData.profile.highlights = document.getElementById('cms-highlights').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    currentData.profile.beyondBio = document.getElementById('cms-beyond').value;
+    save();
+    alert('Profile saved!');
+  };
 
-    posts.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
-    posts.forEach(post => {
-      const item = document.createElement('div');
-      item.className = 'post-admin-item';
-
-      const publishedLabel = post.published !== false ? '' : ' [Draft]';
-
-      item.innerHTML = `
-        <div class="post-admin-info">
-          <h4>${post.title || 'Untitled'}${publishedLabel}</h4>
-          <div class="meta">
-            <span class="cat">${post.category || 'blog'}</span>
-            <span>${post.date || 'No date'}</span>
-          </div>
-        </div>
-        <div class="admin-actions">
-          <button class="edit-btn" data-id="${post.id}">Edit</button>
-          <button class="delete-btn" data-id="${post.id}">Delete</button>
-        </div>
-      `;
-
-      item.querySelector('.edit-btn').addEventListener('click', () => editPost(post.id));
-      item.querySelector('.delete-btn').addEventListener('click', () => deletePost(post.id));
-
-      postsContainer.appendChild(item);
+  // Generic item render
+  function renderItems(type) {
+    var container = document.getElementById('items-' + type);
+    if (!container || !currentData[type]) return;
+    var items = currentData[type];
+    container.innerHTML = items.length ? '' : '<p class="no-posts" style="display:block;">No items yet.</p>';
+    items.forEach(function (item, idx) {
+      var title = item.title || item.degree || item.name || item.source || item.label || 'Item ' + (idx + 1);
+      var meta = item.company || item.school || item.org || item.category || item.period || item.url || '';
+      var div = document.createElement('div');
+      div.className = 'cms-item';
+      div.innerHTML = '<div class="cms-item-info"><h4>' + title + '</h4><div class="meta">' + meta + '</div></div><div class="cms-item-actions"><button class="edit-btn" data-idx="' + idx + '">Edit</button><button class="delete-btn" data-idx="' + idx + '">Del</button></div>';
+      div.querySelector('.edit-btn').addEventListener('click', function () { openItemEditor(type, parseInt(this.dataset.idx)); });
+      div.querySelector('.delete-btn').addEventListener('click', function () { deleteItem(type, parseInt(this.dataset.idx)); });
+      container.appendChild(div);
     });
   }
 
-  function resetForm() {
-    titleInput.value = '';
-    excerptInput.value = '';
-    contentInput.value = '';
-    categoryInput.value = 'blog';
-    dateInput.value = new Date().toISOString().split('T')[0];
-    tagsInput.value = '';
-    publishedInput.checked = true;
-    editingId = null;
-    formTitle.textContent = 'New Post';
-    savePostBtn.textContent = 'Save Post';
-    postFormSection.classList.remove('hidden');
-    postFormSection.scrollIntoView({ behavior: 'smooth' });
+  function deleteItem(type, idx) {
+    if (!confirm('Delete this item?')) return;
+    currentData[type].splice(idx, 1);
+    save();
+    renderItems(type);
   }
 
-  function editPost(id) {
-    const posts = getPosts();
-    const post = posts.find(p => p.id === id);
-    if (!post) return;
+  window.admin.addItem = function (type) {
+    var schema = SCHEMAS[type];
+    if (!schema) return;
+    var newItem = { id: Date.now().toString() };
+    schema.fields.forEach(function (f) {
+      newItem[f.key] = '';
+    });
+    if (type === 'skills') newItem.index = String(currentData.skills.length + 1).padStart(2, '0');
+    currentData[type].push(newItem);
+    save();
+    renderItems(type);
+    openItemEditor(type, currentData[type].length - 1);
+  };
 
-    editingId = id;
-    titleInput.value = post.title || '';
-    excerptInput.value = post.excerpt || '';
-    contentInput.value = post.content || '';
-    categoryInput.value = post.category || 'blog';
-    dateInput.value = post.date || new Date().toISOString().split('T')[0];
-    tagsInput.value = post.tags || '';
-    publishedInput.checked = post.published !== false;
-    formTitle.textContent = 'Edit Post';
-    savePostBtn.textContent = 'Update Post';
-    postFormSection.classList.remove('hidden');
-    postFormSection.scrollIntoView({ behavior: 'smooth' });
-  }
+  var modal = document.getElementById('itemModal');
+  var modalClose = document.getElementById('itemModalClose');
+  var modalTitle = document.getElementById('itemModalTitle');
+  var formContainer = document.getElementById('itemFormContainer');
 
-  function deletePost(id) {
-    if (!confirm('Delete this post permanently?')) return;
-    let posts = getPosts();
-    posts = posts.filter(p => p.id !== id);
-    savePosts(posts);
-    renderPosts();
-  }
-
-  postForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const title = titleInput.value.trim();
-    if (!title) return;
-
-    let posts = getPosts();
-
-    const postData = {
-      id: editingId || Date.now().toString(),
-      title: title,
-      excerpt: excerptInput.value.trim(),
-      content: contentInput.value,
-      category: categoryInput.value,
-      date: dateInput.value || new Date().toISOString().split('T')[0],
-      tags: tagsInput.value.trim(),
-      published: publishedInput.checked
-    };
-
-    if (editingId) {
-      const idx = posts.findIndex(p => p.id === editingId);
-      if (idx !== -1) {
-        posts[idx] = postData;
-      } else {
-        posts.push(postData);
+  function openItemEditor(type, idx) {
+    var item = currentData[type][idx];
+    if (!item) return;
+    editingItem = { type: type, idx: idx };
+    var schema = SCHEMAS[type];
+    if (!schema) return;
+    modalTitle.textContent = 'Edit ' + type.charAt(0).toUpperCase() + type.slice(1);
+    var html = '';
+    schema.fields.forEach(function (f) {
+      var val = item[f.key] || '';
+      if (f.key === 'links' && typeof val === 'object') {
+        val = JSON.stringify(val, null, 2);
       }
-    } else {
-      posts.push(postData);
-    }
+      if (f.type === 'textarea') {
+        html += '<div class="form-group"><label>' + f.label + '</label><textarea class="cms-field" data-key="' + f.key + '" rows="4">' + val + '</textarea></div>';
+      } else {
+        html += '<div class="form-group"><label>' + f.label + '</label><input type="' + f.type + '" class="cms-field" data-key="' + f.key + '" value="' + val.replace(/"/g, '&quot;') + '"></div>';
+      }
+    });
+    html += '<div class="form-actions"><button class="btn btn-primary" id="saveItemBtn">Save</button><button class="btn btn-ghost" id="cancelItemBtn">Cancel</button></div>';
+    formContainer.innerHTML = html;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
 
-    savePosts(posts);
-    renderPosts();
-    postFormSection.classList.add('hidden');
-    editingId = null;
-  });
+    document.getElementById('saveItemBtn').addEventListener('click', function () {
+      var fields = formContainer.querySelectorAll('.cms-field');
+      fields.forEach(function (f) {
+        var key = f.dataset.key;
+        var val = f.value;
+        if (key === 'links') {
+          try { val = JSON.parse(val); } catch (e) { alert('Invalid JSON for links. Use format: [{"label":"...","url":"..."}]'); return; }
+        }
+        currentData[type][editingItem.idx][key] = val;
+      });
+      save();
+      renderItems(type);
+      closeModal();
+    });
+    document.getElementById('cancelItemBtn').addEventListener('click', closeModal);
+  }
 
-  newPostBtn.addEventListener('click', resetForm);
-  cancelFormBtn.addEventListener('click', function () {
-    postFormSection.classList.add('hidden');
-    editingId = null;
-  });
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    editingItem = null;
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+  // Contributions
+  function renderContribs() {
+    ['products', 'ecosystem', 'media'].forEach(function (group) {
+      var container = document.getElementById('contrib-' + group);
+      if (!container || !currentData.contributions[group]) return;
+      var items = currentData.contributions[group];
+      container.innerHTML = items.length ? '' : '<p class="no-posts" style="display:block;">No items.</p>';
+      items.forEach(function (item, idx) {
+        var div = document.createElement('div');
+        div.className = 'cms-item';
+        div.innerHTML = '<div class="cms-item-info"><h4>' + (item.name || 'Unnamed') + '</h4><div class="meta">' + (item.handle || '') + ' &middot; ' + (item.category || '') + '</div></div><div class="cms-item-actions"><button class="edit-btn" data-group="' + group + '" data-idx="' + idx + '">Edit</button><button class="delete-btn" data-group="' + group + '" data-idx="' + idx + '">Del</button></div>';
+        div.querySelector('.edit-btn').addEventListener('click', function () { openContribEditor(this.dataset.group, parseInt(this.dataset.idx)); });
+        div.querySelector('.delete-btn').addEventListener('click', function () { deleteContrib(this.dataset.group, parseInt(this.dataset.idx)); });
+        container.appendChild(div);
+      });
+    });
+  }
+
+  function deleteContrib(group, idx) {
+    if (!confirm('Delete this item?')) return;
+    currentData.contributions[group].splice(idx, 1);
+    save();
+    renderContribs();
+  }
+
+  window.admin.addContrib = function (group) {
+    currentData.contributions[group].push({ id: Date.now().toString(), name: '', handle: '', category: group === 'products' ? 'Product' : group === 'ecosystem' ? 'Ecosystem' : 'Media', url: '' });
+    save();
+    renderContribs();
+    openContribEditor(group, currentData.contributions[group].length - 1);
+  };
+
+  function openContribEditor(group, idx) {
+    var item = currentData.contributions[group][idx];
+    if (!item) return;
+    editingItem = { type: 'contrib_' + group, idx: idx, group: group };
+    modalTitle.textContent = 'Edit ' + (item.name || 'Item');
+    var html =
+      '<div class="form-group"><label>Name</label><input type="text" class="cms-field" data-key="name" value="' + (item.name || '').replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="form-group"><label>Handle (e.g. @handle)</label><input type="text" class="cms-field" data-key="handle" value="' + (item.handle || '').replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="form-group"><label>Category</label><input type="text" class="cms-field" data-key="category" value="' + (item.category || '').replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="form-group"><label>URL</label><input type="url" class="cms-field" data-key="url" value="' + (item.url || '').replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="form-actions"><button class="btn btn-primary" id="saveContribBtn">Save</button><button class="btn btn-ghost" id="cancelItemBtn">Cancel</button></div>';
+    formContainer.innerHTML = html;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('saveContribBtn').addEventListener('click', function () {
+      var fields = formContainer.querySelectorAll('.cms-field');
+      fields.forEach(function (f) { currentData.contributions[group][editingItem.idx][f.dataset.key] = f.value; });
+      save();
+      renderContribs();
+      closeModal();
+    });
+    document.getElementById('cancelItemBtn').addEventListener('click', closeModal);
+  }
+
+  // Blog posts
+  function renderBlogPosts() {
+    var container = document.getElementById('adminPostsContainerBlog');
+    var noPosts = document.getElementById('adminNoPostsBlog');
+    if (!container) return;
+    var posts = [];
+    try { var raw = localStorage.getItem('portfolio_posts'); if (raw) posts = JSON.parse(raw); } catch (e) {}
+    container.innerHTML = '';
+    noPosts.style.display = posts.length ? 'none' : 'block';
+    posts.sort(function (a, b) { return new Date(b.date || 0) - new Date(a.date || 0); });
+    posts.forEach(function (post) {
+      var item = document.createElement('div');
+      item.className = 'post-admin-item';
+      var publishedLabel = post.published !== false ? '' : ' [Draft]';
+      item.innerHTML = '<div class="post-admin-info"><h4>' + (post.title || 'Untitled') + publishedLabel + '</h4><div class="meta"><span class="cat">' + (post.category || 'blog') + '</span><span>' + (post.date || '') + '</span></div></div><div class="admin-actions"><button class="edit-btn" data-id="' + post.id + '">Edit</button><button class="delete-btn" data-id="' + post.id + '">Delete</button></div>';
+      item.querySelector('.edit-btn').addEventListener('click', function () { editBlogPost(this.dataset.id); });
+      item.querySelector('.delete-btn').addEventListener('click', function () { deleteBlogPost(this.dataset.id); });
+      container.appendChild(item);
+    });
+  }
+
+  function editBlogPost(id) {
+    var posts = JSON.parse(localStorage.getItem('portfolio_posts') || '[]');
+    var post = posts.find(function (p) { return p.id === id; });
+    if (!post) return;
+    var newTitle = prompt('Title:', post.title);
+    if (newTitle === null) return;
+    post.title = newTitle.trim();
+    var newExcerpt = prompt('Excerpt:', post.excerpt);
+    if (newExcerpt !== null) post.excerpt = newExcerpt.trim();
+    var newCategory = prompt('Category (blog/thoughts):', post.category);
+    if (newCategory !== null) post.category = newCategory.trim();
+    localStorage.setItem('portfolio_posts', JSON.stringify(posts));
+    renderBlogPosts();
+  }
+
+  function deleteBlogPost(id) {
+    if (!confirm('Delete this post?')) return;
+    var posts = JSON.parse(localStorage.getItem('portfolio_posts') || '[]');
+    localStorage.setItem('portfolio_posts', JSON.stringify(posts.filter(function (p) { return p.id !== id; })));
+    renderBlogPosts();
+  }
 
   checkAuth();
+  return {
+    saveProfile: function () {},
+    addItem: function (type) {},
+    addContrib: function (group) {}
+  };
 })();

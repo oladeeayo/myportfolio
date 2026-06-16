@@ -1575,6 +1575,108 @@ h1, h2, h3, h4 {
   opacity: 0.7;
 }
 
+/* ============ CMS ADMIN ============ */
+
+.cms-tab {
+  padding: 12px 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.3s linear;
+}
+
+.cms-tab:hover {
+  color: var(--text-primary);
+}
+
+.cms-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.cms-panel {
+  display: none;
+}
+
+.cms-panel.active {
+  display: block;
+}
+
+.cms-panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cms-item {
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.cms-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cms-item-info h4 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cms-item-info .meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.cms-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cms-item-actions button {
+  padding: 6px 12px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  color: var(--text-primary);
+}
+
+.cms-item-actions .edit-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cms-item-actions .delete-btn:hover {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
 /* ============ UTILITY ============ */
 
 .hidden { display: none !important; }
