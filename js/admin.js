@@ -62,8 +62,12 @@
   function getPosts() {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch { return []; }
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return [];
   }
 
   function savePosts(posts) {
@@ -139,7 +143,7 @@
   }
 
   function deletePost(id) {
-    if (!confirm('Are you sure you want to delete this post?')) return;
+    if (!confirm('Delete this post permanently?')) return;
     let posts = getPosts();
     posts = posts.filter(p => p.id !== id);
     savePosts(posts);
