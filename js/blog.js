@@ -90,6 +90,8 @@
   ];
 
   function getPosts() {
+    const globalPosts = typeof window.getBlogPosts === 'function' ? window.getBlogPosts() : [];
+    if (globalPosts.length > 0) return globalPosts.filter(p => p.published !== false);
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       if (data) {

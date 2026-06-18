@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
 </head>
@@ -167,6 +167,7 @@
 
       <div class="cms-panel" id="panel-blog">
         <h2 class="cms-panel-title"><i class="ph ph-pencil"></i> Blog Posts</h2>
+        <button class="btn btn-primary" onclick="admin.addBlogPost()" style="margin-bottom:24px;">+ Add Blog Post</button>
         <div class="posts-admin-list" id="adminPostsContainerBlog"></div>
         <div class="no-posts" id="adminNoPostsBlog"><p>No blog posts.</p></div>
       </div>
@@ -183,7 +184,8 @@
     </div>
   </div>
 
-  <script src="js/data.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/admin.js?v=2"></script>
 </body>
 </html>

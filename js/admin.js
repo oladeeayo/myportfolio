@@ -326,49 +326,93 @@
     var container = $('adminPostsContainerBlog');
     var noPosts = $('adminNoPostsBlog');
     if (!container) return;
-    var posts = [];
-    try { var raw = localStorage.getItem('portfolio_posts'); if (raw) posts = JSON.parse(raw); } catch (e) {}
+    var posts = window.getBlogPosts();
     container.innerHTML = '';
     noPosts.style.display = posts.length ? 'none' : 'block';
     posts.sort(function (a, b) { return new Date(b.date || 0) - new Date(a.date || 0); });
     posts.forEach(function (post) {
       var item = document.createElement('div');
-      item.className = 'post-admin-item';
+      item.className = 'cms-item';
       var label = post.published !== false ? '' : ' [Draft]';
-      item.innerHTML = '<div class="post-admin-info"><h4>' + (post.title || 'Untitled') + label + '</h4><div class="meta"><span class="cat">' + (post.category || 'blog') + '</span><span>' + (post.date || '') + '</span></div></div><div class="admin-actions"><button class="edit-btn" data-id="' + post.id + '">Edit</button><button class="delete-btn" data-id="' + post.id + '">Delete</button></div>';
+      item.innerHTML = '<div class="cms-item-info"><h4>' + (post.title || 'Untitled') + label + '</h4><div class="meta"><span>' + (post.category || 'blog') + ' &middot; ' + (post.date || '') + '</span></div></div><div class="cms-item-actions"><button class="edit-btn" data-blog-idx="' + post.id + '">Edit</button><button class="delete-btn" data-blog-idx="' + post.id + '">Del</button></div>';
       container.appendChild(item);
     });
     container.querySelectorAll('.edit-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var posts = JSON.parse(localStorage.getItem('portfolio_posts') || '[]');
-        var post = posts.find(function (p) { return p.id === this.dataset.id; }.bind(this));
-        if (!post) return;
-        var title = prompt('Title:', post.title);
-        if (title === null) return;
-        post.title = title.trim();
-        var excerpt = prompt('Excerpt:', post.excerpt);
-        if (excerpt !== null) post.excerpt = excerpt.trim();
-        var cat = prompt('Category (blog/thoughts):', post.category);
-        if (cat !== null) post.category = cat.trim();
-        localStorage.setItem('portfolio_posts', JSON.stringify(posts));
-        renderBlogPosts();
-      });
+      btn.addEventListener('click', function () { openBlogEditor(this.dataset.blogIdx); });
     });
     container.querySelectorAll('.delete-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         if (!confirm('Delete this post?')) return;
-        var posts = JSON.parse(localStorage.getItem('portfolio_posts') || '[]');
-        localStorage.setItem('portfolio_posts', JSON.stringify(posts.filter(function (p) { return p.id !== this.dataset.id; }.bind(this))));
+        var posts = window.getBlogPosts();
+        window.saveBlogPosts(posts.filter(function (p) { return p.id !== this.dataset.blogIdx; }.bind(this)));
         renderBlogPosts();
       });
     });
+  }
+
+  function addBlogPost() {
+    var posts = window.getBlogPosts();
+    var post = { id: 'post_' + Date.now(), title: '', excerpt: '', category: 'blog', date: '', tags: '', url: '', published: true };
+    posts.push(post);
+    window.saveBlogPosts(posts);
+    renderBlogPosts();
+    openBlogEditor(post.id);
+  }
+
+  var BLOG_SCHEMA = [
+    { key: 'title', label: 'Title', type: 'text' },
+    { key: 'excerpt', label: 'Excerpt', type: 'textarea' },
+    { key: 'category', label: 'Category (blog / thoughts)', type: 'text' },
+    { key: 'date', label: 'Date (YYYY-MM-DD)', type: 'text' },
+    { key: 'tags', label: 'Tags (comma separated)', type: 'text' },
+    { key: 'url', label: 'Medium URL', type: 'url' },
+    { key: 'published', label: 'Published (true / false)', type: 'text' }
+  ];
+
+  function openBlogEditor(postId) {
+    var posts = window.getBlogPosts();
+    var post = posts.find(function (p) { return p.id === postId; });
+    if (!post) return;
+    editingItem = { type: 'blog', postId: postId };
+    $('itemModalTitle').textContent = 'Edit Blog Post';
+    var html = '';
+    BLOG_SCHEMA.forEach(function (f) {
+      var val = String(post[f.key] !== undefined ? post[f.key] : '');
+      var safe = val.replace(/"/g, '&quot;');
+      if (f.type === 'textarea') {
+        html += '<div class="form-group"><label>' + f.label + '</label><textarea class="cms-field" data-key="' + f.key + '" rows="4">' + val + '</textarea></div>';
+      } else {
+        html += '<div class="form-group"><label>' + f.label + '</label><input type="' + f.type + '" class="cms-field" data-key="' + f.key + '" value="' + safe + '"></div>';
+      }
+    });
+    html += '<div class="form-actions"><button class="btn btn-primary" id="modalSaveBtn">Save</button><button class="btn btn-ghost" id="modalCancelBtn">Cancel</button></div>';
+    formContainer.innerHTML = html;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    $('modalSaveBtn').addEventListener('click', function () {
+      var posts = window.getBlogPosts();
+      var p = posts.find(function (x) { return x.id === postId; });
+      if (!p) return;
+      formContainer.querySelectorAll('.cms-field').forEach(function (f) {
+        var key = f.dataset.key;
+        var val = f.value;
+        if (key === 'published') val = val === 'true' || val === '1' || val === 'yes';
+        p[key] = val;
+      });
+      window.saveBlogPosts(posts);
+      renderBlogPosts();
+      closeModal();
+    });
+    $('modalCancelBtn').addEventListener('click', closeModal);
   }
 
   // --- EXPOSE GLOBALLY ---
   window.admin = {
     saveProfile: saveProfile,
     addItem: addItem,
-    addContrib: addContrib
+    addContrib: addContrib,
+    addBlogPost: addBlogPost
   };
 
   function renderAll() {

@@ -18,6 +18,9 @@ window.DEFAULT_DATA = {
   experience: [
     { id: 'exp1', period: '2024 \u2014 Present', title: 'Blockchain Data Analyst', company: 'Dune Analytics \u00b7 Freelance', tag: 'On-Chain' },
     { id: 'exp2', period: '2023 \u2014 Present', title: 'Data Analyst &amp; Tutor', company: 'Self-Employed \u00b7 Remote', tag: 'SQL \u00b7 Python' },
+    { id: 'exp4', period: 'Mar 2022 \u2014 Jul 2022', title: 'Community Manager', company: 'NFTGo \u00b7 Contract \u00b7 Remote', tag: 'Community' },
+    { id: 'exp5', period: '2019 \u2014 2021', title: 'Content Editor', company: 'IOST Watch \u00b7 Remote', tag: 'Content' },
+    { id: 'exp6', period: '2018 \u2014 2019', title: 'Community Manager', company: 'Endless Games \u00b7 Remote', tag: 'Community' },
     { id: 'exp3', period: 'Jun 2021 \u2014 Dec 2021', title: 'Customer Support Representative', company: 'Jumia Nigeria \u00b7 Contract \u00b7 On-site', tag: 'Support' }
   ],
 
@@ -188,7 +191,57 @@ function sortByPeriod(arr) {
   });
 }
 
+// --- Supabase sync ---
+function supabaseFetch(path, options) {
+  var cfg = window.SUPABASE_CONFIG;
+  if (!cfg || !cfg.url || !cfg.anonKey) return Promise.reject('Supabase not configured');
+  var url = cfg.url.replace(/\/$/, '') + path;
+  return fetch(url, {
+    headers: {
+      apikey: cfg.anonKey,
+      Authorization: 'Bearer ' + cfg.anonKey,
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    ...options
+  });
+}
+
+function supabaseLoad() {
+  return supabaseFetch('/rest/v1/portfolio_data?id=eq.main&select=data,posts')
+    .then(function (r) { if (!r.ok) throw new Error('Supabase fetch failed'); return r.json(); })
+    .then(function (rows) {
+      if (rows && rows.length > 0) {
+        if (rows[0].data) window._supabaseData = rows[0].data;
+        if (rows[0].posts) window._supabasePosts = rows[0].posts;
+      }
+    })
+    .catch(function () {});
+}
+
+function supabaseSave(data, posts) {
+  var body = { updated_at: new Date().toISOString() };
+  if (data) body.data = data;
+  if (posts) body.posts = posts;
+  return supabaseFetch('/rest/v1/portfolio_data?id=eq.main', {
+    method: 'PATCH',
+    body: JSON.stringify(body)
+  }).catch(function () {});
+}
+
+// Load from Supabase on script init (fire-and-forget)
+if (typeof window.SUPABASE_CONFIG !== 'undefined') {
+  supabaseLoad();
+}
+
 window.getPortfolioData = function () {
+  // Prefer Supabase data if available
+  if (window._supabaseData && window._supabaseData.profile) {
+    sortByPeriod(window._supabaseData.experience);
+    sortByPeriod(window._supabaseData.education);
+    return window._supabaseData;
+  }
+  // Fallback to localStorage
   try {
     var raw = localStorage.getItem(window.PORTFOLIO_STORAGE_KEY);
     if (raw) {
@@ -200,6 +253,7 @@ window.getPortfolioData = function () {
       }
     }
   } catch (e) {}
+  // Final fallback: defaults
   var def = JSON.parse(JSON.stringify(window.DEFAULT_DATA));
   sortByPeriod(def.experience);
   sortByPeriod(def.education);
@@ -208,8 +262,30 @@ window.getPortfolioData = function () {
 
 window.savePortfolioData = function (data) {
   localStorage.setItem(window.PORTFOLIO_STORAGE_KEY, JSON.stringify(data));
+  window._supabaseData = data;
+  supabaseSave(data, null);
 };
 
 window.resetPortfolioData = function () {
   localStorage.removeItem(window.PORTFOLIO_STORAGE_KEY);
+  window._supabaseData = null;
+  supabaseSave(null, null);
+};
+
+// Blog post helpers with Supabase sync
+window.getBlogPosts = function () {
+  if (window._supabasePosts && Array.isArray(window._supabasePosts) && window._supabasePosts.length > 0) {
+    return JSON.parse(JSON.stringify(window._supabasePosts));
+  }
+  try {
+    var raw = localStorage.getItem('portfolio_posts');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return [];
+};
+
+window.saveBlogPosts = function (posts) {
+  localStorage.setItem('portfolio_posts', JSON.stringify(posts));
+  window._supabasePosts = posts;
+  supabaseSave(null, posts);
 };
