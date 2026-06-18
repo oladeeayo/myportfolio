@@ -29,6 +29,6 @@
 // Leave url and anonKey empty ('') to use only localStorage (no cross-device sync).
 
 window.SUPABASE_CONFIG = {
-  url: 'xzzszjforlfwypwlkkhr',
+  url: 'https://xzzszjforlfwypwlkkhr.supabase.co',
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6enN6amZvcmxmd3lwd2xra2hyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1NDQsImV4cCI6MjA5NzM2NjU0NH0.Eb8R1o165L6TTQkgmsG5oSHBkCvmhUKf6vBSzlSLNjA'
 };
